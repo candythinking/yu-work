@@ -1,5 +1,6 @@
 package yuweixiang.first.search;
 
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionResponse;
@@ -10,8 +11,6 @@ import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRespon
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.node.DiscoveryNode;
-import org.elasticsearch.common.collect.UnmodifiableIterator;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
@@ -25,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+//import org.elasticsearch.common.settings.ImmutableSettings;
 
 /**
  * elasticsearch 管理器，用于初始化elasticsearch相关配置，并且连接elasticsearch节点
@@ -178,15 +179,19 @@ public class ESManager {
 
         // 2. 设置配置文件和集群名称，只要集群名称一致，则自动加入集群
         String[] transportsArray = transports.split(",");
-        Settings settings = ImmutableSettings.settingsBuilder()
+        Settings settings = Settings.settingsBuilder()
                 .put("cluster.name", clusterName.trim()).build();
-        TransportClient transportClient = new TransportClient(settings);
+        TransportClient transportClient = TransportClient.builder().build();
         // 2.1. 连接TransportClient,TransportClient的默认端口是9300
         //注意TransportClient的端口和Http服务的端口是不一样的
         for (String transport : transportsArray) {
             String[] transportInfo = transport.split(":");
-            transportClient.addTransportAddress(new InetSocketTransportAddress(transportInfo[0].trim()
-                    , Integer.parseInt(transportInfo[1].trim())));
+            try {
+                transportClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(transportInfo[0].trim())
+                        , Integer.parseInt(transportInfo[1].trim())));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
         }
 
         // 2.2. 验证节点是否存在，如果存在说明成功

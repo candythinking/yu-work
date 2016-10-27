@@ -41,7 +41,7 @@ public class SearchController extends BaseController {
      * @param model
      * @return 字符串
      */
-    @RequestMapping(value = "/search.htm")
+    @RequestMapping(value = "/search.vm")
     public String doGet(SearchRequestForm searchRequestForm, ModelMap model) {
         LOGGER.info("requestForm:"+searchRequestForm);
 

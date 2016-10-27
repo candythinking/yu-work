@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/common.css" />
 </head>
 <body>
-    <form action="search.htm" method="post">
+    <form action="search.vm" method="post">
         <span>
             <input class="input" name = "keyWord" placeholder="开始愉快的搜索之旅吧:)" value="$!keyWord"/>
         </span>

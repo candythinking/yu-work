@@ -74,10 +74,10 @@ public class ESClientImpl implements ESClient {
     @Override
     public SearchResponse searchDataByKeys(SearchRequest searchRequest) {
 
-        BoolFilterBuilder filter = FilterBuilders.boolFilter();
-        buildNestedQueryBuilder(filter,searchRequest.getSearchFieldList());
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        buildNestedQueryBuilder(queryBuilder,searchRequest.getSearchFieldList());
         // 搜索
-        QueryBuilder query = QueryBuilders.filteredQuery(null, filter);
+        QueryBuilder query = queryBuilder;
         SearchRequestBuilder searchRequestBuilder = esManager.getESClient()
                 .prepareSearch(searchRequest.getAlis()).setTypes(searchRequest.getType()).setQuery(query);
 
@@ -87,20 +87,18 @@ public class ESClientImpl implements ESClient {
     /**
      * 构建内嵌查询
      *
-     * @param filterBuilder 查询条件
+     * @param queryBuilder 查询条件
      * @param searchFieldList 内嵌查询请求参数
      */
-    private void buildNestedQueryBuilder(FilterBuilder filterBuilder,
+    private void buildNestedQueryBuilder(BoolQueryBuilder queryBuilder,
                                          List<SearchField> searchFieldList) {
         if (searchFieldList != null) {
-            BoolFilterBuilder boolFilterBuilder = (BoolFilterBuilder) filterBuilder;
             for (SearchField searchField : searchFieldList) {
                 // 暂时使用math查询
                 MultiMatchQueryBuilder matchQuery = QueryBuilders.multiMatchQuery(searchField.getValue(),
                         buildMultiQueryKey(searchField));
-                NestedFilterBuilder nestQueryBuilder = FilterBuilders
-                        .nestedFilter(searchField.getNestedType(), matchQuery);
-                boolFilterBuilder.must(nestQueryBuilder);
+                NestedQueryBuilder nestQueryBuilder = QueryBuilders.nestedQuery(searchField.getNestedType(), matchQuery);
+                queryBuilder.must(nestQueryBuilder);
             }
         }
     }

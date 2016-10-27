@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans [
+        <!ELEMENT beans (context:property-placeholder|bean)*>
+        <!ATTLIST beans
+                xmlns CDATA #REQUIRED
+                xmlns:dubbo CDATA #REQUIRED
+                xmlns:context CDATA #REQUIRED
+                xmlns:xsi CDATA #REQUIRED
+                xmlns:p CDATA #REQUIRED
+                xsi:schemaLocation CDATA #REQUIRED
+                default-lazy-init CDATA #REQUIRED>
+        <!ELEMENT context:property-placeholder (#PCDATA)>
+        <!ATTLIST context:property-placeholder
+                ignore-resource-not-found CDATA #REQUIRED
+                location CDATA #REQUIRED>
+        <!ELEMENT bean (property)*>
+        <!ATTLIST bean
+                class CDATA #REQUIRED
+                id CDATA #REQUIRED
+                p:configurationLoader-ref CDATA #IMPLIED>
+        <!ELEMENT property (#PCDATA)>
+        <!ATTLIST property
+                name CDATA #REQUIRED
+                ref CDATA #IMPLIED
+                value CDATA #IMPLIED>
+        ]>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:dubbo="http://code.alibabatech.com/schema/dubbo" xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd"
        default-lazy-init="false">
+<!--<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+       default-lazy-init="false">-->
 
     <context:property-placeholder ignore-resource-not-found="true"
                                   location="classpath:config.properties"/>
